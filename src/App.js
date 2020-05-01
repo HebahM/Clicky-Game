@@ -1,5 +1,5 @@
 import React from 'react';
-import {Component} from 'react'
+import { Component } from 'react'
 // import logo from './logo.svg';
 import './App.css';
 import Navbar from "./components/Navbar";
@@ -7,12 +7,26 @@ import images from "./images.json";
 
 class App extends Component {
 
-  state = {
-    images,
-    score: 0,
-    topScore: 0,
-    imageClicked: []
+  // state = {
+  //   images,
+  //   score: 0,
+  //   topScore: 0,
+  //   imageClicked: []
+  // }
+
+  constructor() {
+    super();
+    this.state = {
+      images,
+      score: 0,
+      topScore: 0,
+      imageClicked: [],
+      message: "Click an image"
+    }
+    this.playGame = this.playGame.bind(this);
+    console.log(this)
   }
+
   shuffle = (array) => {
     let i = array.length - 1;
     for (; i > 0; i--) {
@@ -24,62 +38,53 @@ class App extends Component {
     return array;
   }
   playGame = (event) => {
-    console.log("button clicked")
-    console.log(event.target.id)
-    this.setState({imageClicked: this.state.imageClicked.concat(event.target.id)})
+    this.setState({ imageClicked: this.state.imageClicked.concat(event.target.id) })
     console.log("imageclicked array: " + this.state.imageClicked)
 
     if (this.state.imageClicked.indexOf(event.target.id) === -1) {
       console.log("new click")
-      this.setState({score: this.state.score+1})
+      var currentScore = this.state.score
+      currentScore++;
+      var currentTopScore = this.state.topScore
+      if (currentScore > currentTopScore) {
+        currentTopScore++;
+      }
+      this.setState({ score: currentScore, topScore: currentTopScore, message: "You guessed correctly" })
+      console.log(this.state)
     }
     else {
       console.log("already clicked")
       console.log(this.state.imageClicked, event.target.id)
       this.resetGame();
     }
-    // for (var i = 0; i < this.state.imageClicked.length-1; i++) {
-    //   if (event.target.id === this.state.imageClicked[i]) {
-    //     console.log("already clicked")
-    //     console.log(this.state.imageClicked[i], event.target.id)
-    //     this.resetGame();
-    //   } else {
-    //     console.log("new click")
-    //     this.setState({score: this.state.score+1})
-    //   }
-    // }
-
-    if (this.state.score > this.state.topScore) {
-      this.setState({topScore: this.state.score})
-    }
-
     this.shuffle(images);
-    console.log(this.state.imageClicked);
   }
 
-  shuffle = (a) => {
-    var j, x, i;
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = a[i];
-        a[i] = a[j];
-        a[j] = x;
+  shuffle = (array) => {
+    var randomIndex, tempItem, i;
+    for (i = array.length - 1; i > 0; i--) {
+      randomIndex = Math.floor(Math.random() * (i + 1));
+      tempItem = array[i];
+      array[i] = array[randomIndex];
+      array[randomIndex] = tempItem;
     }
-    return a;
-}
+    return array;
+  }
+
   resetGame = () => {
-    this.setState({score: 0})
-    this.setState({imageClicked: []})
-    alert("you alredy clicked that picture")
+    this.setState({ score: 0, imageClicked: [], message: "You already guessed that one" })
+
+    // alert("you alredy clicked that picture")
   }
 
   render() {
     return (
       <div className="App">
         <Navbar />
-    <p>Score: {this.state.score}</p>
-    <p>Top Score: {this.state.topScore}</p>
-        <div id="images">
+        <p>{this.state.message}</p>
+        <p>Score: {this.state.score}</p>
+        <p>Top Score: {this.state.topScore}</p>
+        <div id="images" className={this.state.message === "You already guessed that one" ? "wrong": ""}>
           {images.map(image => (
             <img
               src={image.url}
@@ -94,7 +99,8 @@ class App extends Component {
           ))}
         </div>
       </div>
-    )}
+    )
+  }
 }
 
 export default App;

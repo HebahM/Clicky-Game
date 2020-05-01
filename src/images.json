@@ -2,7 +2,8 @@
     {
         "id": "1",
         "name": "Iron Man",
-        "url": "/images/iron-man.jpg"
+        "url": "/images/iron-man.jpg",
+        "clicked": false
     },
     {
         "id": "2",
