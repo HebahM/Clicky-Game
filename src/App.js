@@ -81,10 +81,12 @@ class App extends Component {
     return (
       <div className="App">
         <Navbar />
-        <p>{this.state.message}</p>
+        <p
+        className={this.state.message === "You already guessed that one" ? "animated flash wrong": ""}
+        >{this.state.message}</p>
         <p>Score: {this.state.score}</p>
         <p>Top Score: {this.state.topScore}</p>
-        <div id="images" className={this.state.message === "You already guessed that one" ? "wrong": ""}>
+        <div id="images" className={this.state.message === "You already guessed that one" ? "animated shake": ""}>
           {images.map(image => (
             <img
               src={image.url}
